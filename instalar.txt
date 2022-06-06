@@ -1,0 +1,7 @@
+---------instrucciones para instalar----------------
+en la consola escribir cd (nombre del proyecto)
+->npm install
+->npm start
+
+----------nombre de la base de datos---------------
+nombre del api="http://ec2-3-101-126-115.us-west-1.compute.amazonaws.com:7002"

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { View, Text, StyleSheet, Image, Pressable, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getOneProductApi } from "../../api/product";
 import userContext from "../../hooks/user";
 
 export default function Product(props) {
+  const { navigation } = props;
   const { id, token } = props.route.params.data.data;
   const { name, description, price, idProduct } = props.route.params;
   const { products, setProducts } = userContext();
@@ -15,42 +15,39 @@ export default function Product(props) {
     products;
   });
   const addCar = () => {
-    const { navigation } = props;
     productArray = [];
     console.log(products);
-    if (!products.length) {
+
+    if (products.some((product) => product[0].id == idProduct)) {
+      for (var i = 0; i < products.length; i++) {
+        console.log("entra", products.length);
+        if (idProduct == products[i][0].id) {
+          console.log("existe");
+          products[i][0].amount = products[i][0].amount + count;
+          console.log("amount:", products[i][0].amount);
+          setProducts(products);
+        }
+      }
+    } else {
       console.log("no existe");
       productArray.push({ id: idProduct, name: name, price: price, amount: count });
       setProducts([...products, productArray]);
-    } else {
-      products.map((item, index) => {
-        if (item[0]?.id == idProduct) {
-          console.log("existe");
-          item[0].amount = item[0].amount + count;
-          setProducts([...products]);
-          console.log("item: ", item[0].amount);
-          console.log("ammount: ", products[index][0].amount);
-        }
-        if (item[0]?.id != idProduct) {
-          console.log("no existe array +");
-          productArray.push({ id: idProduct, name: name, price: price, amount: count });
-          setProducts([...products, productArray]);
-        }
-      });
     }
+    console.log(products);
     setModalVisible(true);
-    navigation.navigate("Details");
   };
 
   return (
     <SafeAreaView>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Producto agregado al carrito</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={() => {
+                setModalVisible(false), navigation.navigate("Details");
+              }}
             >
               <Text style={styles.textStyle}>Ok</Text>
             </Pressable>
@@ -70,6 +67,7 @@ export default function Product(props) {
         <View style={styles.containerBtn}>
           <View style={styles.containerGroup}>
             <Pressable
+              disabled={count <= 1}
               style={styles.btnGroup}
               onPress={() => {
                 setCount(count - 1);

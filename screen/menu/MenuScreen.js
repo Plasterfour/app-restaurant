@@ -11,25 +11,21 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { getAllProductApi } from "../../api/product";
-import { useNavigation } from "@react-navigation/native";
-import { useRoute } from "@react-navigation/native";
 
 export default function MenuScreen(props) {
   const { navigation } = props;
-  console.log("MenuScreen:", props);
+  //console.log("MenuScreen:", props);
   const { id, address, token } = props.route.params.data.data;
 
   const [pros, setPro] = useState([]);
   useEffect(() => {
-    (async () => {
-      await showMenu();
-    })();
+    showMenu();
   }, []);
 
   const showMenu = async () => {
     productArray = [];
     const response = await getAllProductApi();
-    console.log("showproduct: ", response);
+    //console.log("showproduct: ", response);
     const products = response;
 
     for await (const product of products) {
@@ -44,6 +40,7 @@ export default function MenuScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Menu</Text>
       <View style={styles.mainCard}>
         <Icon name="street-view" size={30} color="#a4a4a4" solid style={{ marginRight: 20 }} />
         <Text style={styles.address}> {address}</Text>
@@ -56,10 +53,10 @@ export default function MenuScreen(props) {
           <TouchableWithoutFeedback
             onPress={() => {
               navigation.navigate("Product", {
-                idProduct:item.id,
-                name:item.name,
-                description:item.description,
-                price:item.price
+                idProduct: item.id,
+                name: item.name,
+                description: item.description,
+                price: item.price,
               });
             }}
           >
@@ -85,6 +82,12 @@ export default function MenuScreen(props) {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    letterSpacing: 0.9,
+    margin: 20,
+  },
   container: {
     flex: 1,
   },
@@ -107,7 +110,7 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    height: 170,
+    height: 190,
   },
   address: {
     fontSize: 16,
@@ -144,8 +147,10 @@ const styles = StyleSheet.create({
     color: "white",
   },
   image: {
+    marginTop: 5,
     bottom: 5,
     height: 90,
-    width: 150,
+    width: "100%",
+    borderRadius: 10,
   },
 });

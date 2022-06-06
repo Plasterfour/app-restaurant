@@ -9,9 +9,6 @@ export function UserProvider(props) {
   const [user, setUser] = useState([]);
   const [products, setProducts] = useState([]);
 
-  /* useEffect(() => {
-  }, []); */
-
   //console.log("userContext: ", user);
   console.log("productsContext: ", products);
   return (

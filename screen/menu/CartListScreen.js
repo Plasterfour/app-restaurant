@@ -1,17 +1,18 @@
-import React, { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, Image, Pressable, FlatList, Modal } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, Pressable, FlatList, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/FontAwesome";
 import userContext from "../../hooks/user";
+import { registerBillApi } from "../../api/bill";
 
 export default function CartList() {
   var { user, products, setProducts } = userContext();
+  var [bill, setBill] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   var [total, setTotal] = useState();
 
   useEffect(() => {
     getTotal();
-    products;
+    bill;
   }, [products]);
 
   const getTotal = () => {
@@ -24,22 +25,38 @@ export default function CartList() {
 
   const deleteCar = () => {
     console.log("borrrado");
+    setModalVisible(!modalVisible);
     setProducts([]);
     total = 0;
   };
 
   const createCar = () => {
+    productArray = [];
+
+    console.log("products:", products);
+    const data = {
+      id: user._id,
+      products,
+      total,
+    };
+    console.log("data", data);
+    registerBillApi(data).then((response) => {
+      console.log("response", response);
+      console.log("bill", bill);
+    });
     setModalVisible(true);
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Productos comprados</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={() => {
+                deleteCar();
+              }}
             >
               <Text style={styles.textStyle}>Ok</Text>
             </Pressable>
@@ -65,7 +82,12 @@ export default function CartList() {
         <Text style={styles.total}>{total}</Text>
       </View>
       <View style={styles.btnGroup}>
-        <Pressable style={[styles.btn, { backgroundColor: "red" }]} onPress={deleteCar}>
+        <Pressable
+          style={[styles.btn, { backgroundColor: "red" }]}
+          onPress={() => {
+            deleteCar();
+          }}
+        >
           <Text>Borrar</Text>
         </Pressable>
         <Pressable style={styles.btn} onPress={createCar}>

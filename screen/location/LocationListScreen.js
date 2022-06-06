@@ -18,9 +18,7 @@ export default function LocationListScreen(props) {
   const { id, token } = props.route.params;
   const [locs, setLoc] = useState([]);
   useEffect(() => {
-    (async () => {
-      await showLocations();
-    })();
+    showLocations();
   }, []);
 
   const getLocation = async () => {
